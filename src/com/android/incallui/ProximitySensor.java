@@ -43,7 +43,6 @@ public class ProximitySensor implements AccelerometerListener.OrientationListene
     private final PowerManager.WakeLock mProximityWakeLock;
     private final AudioModeProvider mAudioModeProvider;
     private final AccelerometerListener mAccelerometerListener;
-    private final ProximityListener mProximityListener;
     private int mOrientation = AccelerometerListener.ORIENTATION_UNKNOWN;
     private boolean mUiShowing = false;
     private boolean mIsPhoneOffhook = false;
@@ -65,7 +64,6 @@ public class ProximitySensor implements AccelerometerListener.OrientationListene
         Log.d(this, "onCreate: mProximityWakeLock: ", mProximityWakeLock);
 
         mAccelerometerListener = new AccelerometerListener(context, this);
-        mProximityListener = new ProximityListener(context);
         mAudioModeProvider = audioModeProvider;
         mAudioModeProvider.addListener(this);
     }
@@ -74,7 +72,6 @@ public class ProximitySensor implements AccelerometerListener.OrientationListene
         mAudioModeProvider.removeListener(this);
 
         mAccelerometerListener.enable(false);
-        mProximityListener.enable(false);
 
         if (mProximityWakeLock != null && mProximityWakeLock.isHeld()) {
             mProximityWakeLock.release();
@@ -105,7 +102,6 @@ public class ProximitySensor implements AccelerometerListener.OrientationListene
 
             mOrientation = AccelerometerListener.ORIENTATION_UNKNOWN;
             mAccelerometerListener.enable(mIsPhoneOffhook);
-            mProximityListener.enable(mIsPhoneOffhook);
 
             updateProximitySensorMode();
         }
@@ -164,10 +160,6 @@ public class ProximitySensor implements AccelerometerListener.OrientationListene
      */
     public boolean isScreenReallyOff() {
         return !mPowerManager.isScreenOn();
-    }
-
-    public boolean isScreenOffByProximity() {
-        return mProximityListener.isActive();
     }
 
     /**
